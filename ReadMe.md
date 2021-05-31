@@ -36,8 +36,8 @@ They can be added by calling the ``addPlot("Name", "Unit", interval, goodThresho
 |1. The Sensor Name | String | how this measurement is called (e.g. "CO2 Concentration")|
 |2. Sensor Unit | String | what this value is measured in (e.g. "ppm - parts per million")|
 |3. Reload Interval | Int | in which interval shoud the webinterface reload the sensore data form the server (often same as cycleDuration)|
-|4. Good Threshold | Int | up to which value can this measurement be considered as good|
-|5. Bad Threshold | Int | at which value can this measurement be considered as bad|
+|4. lower Threshold | Int | down to which value can this measurement be considered as good|
+|5. upper Threshold | Int | up to which value can this measurement be considered as good|
 |6. Min Graph-Value | Int | the minimum Y-Axis value that is static on the graph (gets overriden, when reaching this border)|
 |7. Max Graph-Value | Int | the maximum Y-Axis value that is static on the graph (gets overriden, when reaching this border)|
 |8. Graph Stepsize | Int | at which interval should the Y-Axis labels be displayed (e.g. 0 - 200 - 400 - 600 [stepszie = 200])|
