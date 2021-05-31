@@ -103,22 +103,22 @@ function validateSmileyState() {
 		const graph = container.getElementsByClassName('graph')[0];
 		let values = parseValues(graph);
 		let currentValue = values[values.length-1];
-		let goodThreshold = container.getAttribute('data-good-threshold');
-		let badThreshold = container.getAttribute('data-bad-threshold');
+		let lowThreshold = container.getAttribute('data-low-threshold');
+		let upperThreshold = container.getAttribute('data-upper-threshold');
 		switch (state) {
 			case SmileyState.Happy:
-				if (currentValue > badThreshold && badThreshold != '') {
+				if (currentValue > upperThreshold && upperThreshold != '') {
 					console.log(currentValue);
 					state = SmileyState.Sad;
 					smileyColor = '#f03030';
-				} else if (currentValue > goodThreshold && goodThreshold != '') {
+				} else if (currentValue > lowThreshold && lowThreshold != '') {
 					console.log(currentValue);
 					state = SmileyState.Medium;
 					smileyColor = '#ffe600';
 				}
 				break;
 			case SmileyState.Medium:
-				if (currentValue > badThreshold && badThreshold != '') {
+				if (currentValue > upperThreshold && upperThreshold != '') {
 					console.log(currentValue);
 					state = SmileyState.Sad;
 					smileyColor = '#f03030';
@@ -175,7 +175,7 @@ function createMeasurements() {
 		measurements.appendChild(p);
 	}
 }
-function createGraphModule(title, unit, slag, interval, good, bad, min, max, clipping, stepsize, cycle, cycleStepsize) {
+function createGraphModule(title, unit, slag, interval, low, upper, min, max, clipping, stepsize, cycle, cycleStepsize) {
 	const graphModule = document.createElement('div');
 	graphModule.classList.add('container', 'graphmodule');
 	const headline = document.createElement('h1');
@@ -194,8 +194,8 @@ function createGraphModule(title, unit, slag, interval, good, bad, min, max, cli
 	graphContainer.setAttribute('data-unit', unit);
 	graphContainer.setAttribute('data-slag', slag);
 	graphContainer.setAttribute('data-interval', interval);
-	graphContainer.setAttribute('data-good-threshold', good);
-	graphContainer.setAttribute('data-bad-threshold', bad);
+	graphContainer.setAttribute('data-low-threshold', low);
+	graphContainer.setAttribute('data-upper-threshold', upper);
 	graphModule.appendChild(graphContainer);
 	const graphPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
 	graphPolygon.classList.add('graph');
