@@ -10,8 +10,8 @@ typedef struct Sensor_Plot_S {
     String unit;
     String slag;
     int interval;
-    int good;
-    int bad;
+    int low;
+    int high;
 
     int min;
     int max;
@@ -46,7 +46,7 @@ class SensorPlot_WebInterface {
 
     public: 
         SensorPlot_WebInterface();
-        void addPlot(String title, String unit, int interval, int good, int bad, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis);
+        void addPlot(String title, String unit, int interval, int low, int high, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis);
 		void interfaceConfig(String websiteTitle, String callbackInput, String callbackButton);
         void serverResponseSetup(ESP8266WebServer *server, int (*callback)(String response));
 };
