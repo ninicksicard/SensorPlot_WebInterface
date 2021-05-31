@@ -40,7 +40,7 @@ void sensorReading(float *measurements, int *measurementsCount, int maxMeasureme
 int measurementsCount1 = 0;
 float measurements1[128] = {};
 int measurementsTimestamp1 = millis();
-int cycleDuration1 = 60; // duration in seconds
+int cycleDuration1 = 60; // duration in seconds between graph updates
 void sensorReading1() {
   float sensorInput = (float) 0;    // <- sensor reading for first input
   sensorReading(measurements1, &measurementsCount1, 128, &measurementsTimestamp1, sensorInput);
@@ -50,7 +50,7 @@ void sensorReading1() {
 int measurementsCount2 = 0;
 float measurements2[128] = {};
 int measurementsTimestamp2 = millis();
-int cycleDuration2 = 60; // duration in seconds
+int cycleDuration2 = 60; // duration in seconds between graph updates
 void sensorReading2() {
   float sensorInput = (float) 0;    // <- sensor reading for second input
   sensorReading(measurements2, &measurementsCount2, 128, &measurementsTimestamp2, sensorInput);
@@ -60,24 +60,24 @@ void configWebInterface() {
   // Graph 1
   String name1 = "CO2 Concentration";
   String unit1 = "ppm";
-  int good1 = 1200;
-  int bad1 = 2000;
+  int lower1 = 10;
+  int upper1 = 2000;
   int min1 = 400;
   int max1 = 3000;
-  int stepsize1 = 200;
-  int cycleStepsize1 = 600;
-  webInterface.addPlot(name1, unit1, cycleDuration1, good1, bad1, min1, max1, stepsize1, cycleDuration1, cycleStepsize1, &measurementsCount1, measurements1, &measurementsTimestamp1);
+  int stepsize1 = 200; // y axis increment interval
+  int cycleStepsize1 = 600; // x axis increment interval
+  webInterface.addPlot(name1, unit1, cycleDuration1, lower1, upper1, min1, max1, stepsize1, cycleDuration1, cycleStepsize1, &measurementsCount1, measurements1, &measurementsTimestamp1);
   
   // Graph 2
   String name2 = "Temperature";
   String unit2 = "°C";
-  int good2 = 30;
-  int bad2 = 50;
+  int lower2 = 10;
+  int upper2 =30;
   int min2 = -10;
   int max2 = 40;
-  int stepsize2 = 5;
-  int cycleStepsize2 = 600;
-  webInterface.addPlot(name2, unit2, cycleDuration2, good2, bad2, min2, max2, stepsize2, cycleDuration2, cycleStepsize2, &measurementsCount2, measurements2, &measurementsTimestamp2);
+  int stepsize2 = 5; // y axis increment interval
+  int cycleStepsize2 = 600; // x axis increment interval
+  webInterface.addPlot(name2, unit2, cycleDuration2, lower2, upper2, min2, max2, stepsize2, cycleDuration2, cycleStepsize2, &measurementsCount2, measurements2, &measurementsTimestamp2);
 }
 
 
