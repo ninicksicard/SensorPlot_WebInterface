@@ -103,7 +103,7 @@ function validateSmileyState() {
 		const graph = container.getElementsByClassName('graph')[0];
 		let values = parseValues(graph);
 		let currentValue = values[values.length-1];
-		let lowThreshold = container.getAttribute('data-low-threshold');
+		let lowerThreshold = container.getAttribute('data-lower-threshold');
 		let upperThreshold = container.getAttribute('data-upper-threshold');
 		switch (state) {
 			case SmileyState.Happy:
@@ -111,7 +111,7 @@ function validateSmileyState() {
 					console.log(currentValue);
 					state = SmileyState.Sad;
 					smileyColor = '#f03030';
-				} else if (currentValue > lowThreshold && lowThreshold != '') {
+				} else if (currentValue > lowerThreshold && lowerThreshold != '') {
 					console.log(currentValue);
 					state = SmileyState.Medium;
 					smileyColor = '#ffe600';
@@ -175,7 +175,7 @@ function createMeasurements() {
 		measurements.appendChild(p);
 	}
 }
-function createGraphModule(title, unit, slag, interval, low, upper, min, max, clipping, stepsize, cycle, cycleStepsize) {
+function createGraphModule(title, unit, slag, interval, lower, upper, min, max, clipping, stepsize, cycle, cycleStepsize) {
 	const graphModule = document.createElement('div');
 	graphModule.classList.add('container', 'graphmodule');
 	const headline = document.createElement('h1');
@@ -194,7 +194,7 @@ function createGraphModule(title, unit, slag, interval, low, upper, min, max, cl
 	graphContainer.setAttribute('data-unit', unit);
 	graphContainer.setAttribute('data-slag', slag);
 	graphContainer.setAttribute('data-interval', interval);
-	graphContainer.setAttribute('data-low-threshold', low);
+	graphContainer.setAttribute('data-lower-threshold', lower);
 	graphContainer.setAttribute('data-upper-threshold', upper);
 	graphModule.appendChild(graphContainer);
 	const graphPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
