@@ -307,10 +307,10 @@ function validateSmileyState() {\n\
 		let values = parseValues(graph);\n\
 		let currentValue = values[values.length-1];\n\
 		let LowTreshold = container.getAttribute('data-low-threshold');\n\
-		let HighTreshold = container.getAttribute('data-high-threshold');\n\
+		let upperTreshold = container.getAttribute('data-upper-threshold');\n\
 		switch (state) {\n\
 			case SmileyState.Happy:\n\
-				if (LowTreshold > currentValue || currentValue > HighTreshold && LowTreshold != '' && HighTreshold != '') {\n\
+				if (LowTreshold > currentValue || currentValue > upperTreshold && LowTreshold != '' && upperTreshold != '') {\n\
 					console.log(currentValue);\n\
 					state = SmileyState.Sad;\n\
 					smileyColor = '#f03030';\n\
@@ -367,7 +367,7 @@ function createMeasurements() {\n\
 		measurements.appendChild(p);\n\
 	}\n\
 }\n\
-function createGraphModule(title, unit, slag, interval, low, high, min, max, clipping, stepsize, cycle, cycleStepsize) {\n\
+function createGraphModule(title, unit, slag, interval, low, upper, min, max, clipping, stepsize, cycle, cycleStepsize) {\n\
 	const graphModule = document.createElement('div');\n\
 	graphModule.classList.add('container', 'graphmodule');\n\
 	const headline = document.createElement('h1');\n\
@@ -387,7 +387,7 @@ function createGraphModule(title, unit, slag, interval, low, high, min, max, cli
 	graphContainer.setAttribute('data-slag', slag);\n\
 	graphContainer.setAttribute('data-interval', interval);\n\
 	graphContainer.setAttribute('data-low-threshold', low);\n\
-	graphContainer.setAttribute('data-high-threshold', high);\n\
+	graphContainer.setAttribute('data-upper-threshold', upper);\n\
 	graphModule.appendChild(graphContainer);\n\
 	const graphPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');\n\
 	graphPolygon.classList.add('graph');\n\
@@ -661,7 +661,7 @@ __FlashStringHelper* SENSORPLOT_JAVASCRIPT = (__FlashStringHelper*)SENSORPLOT_JA
 SensorPlot_WebInterface::SensorPlot_WebInterface() {
 }
 
-void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, int low, int bad, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis) {
+void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, int low, int upper, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis) {
     if (this->plotterCount > 31) {
         return;
     }
@@ -672,7 +672,7 @@ void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, i
 	plot->slag = String(this->plotterCount);
     plot->interval = interval;
     plot->low = low;
-    plot->high = high;
+    plot->upper = upper;
     plot->min = min;
     plot->max = max;
     plot->clipping = 0;
@@ -786,7 +786,7 @@ void SensorPlot_WebInterface::responseGraphData() {
         response += (this->plotter_p[i]->slag + ",");
         response += (String(this->plotter_p[i]->interval) + ",");
         response += (String(this->plotter_p[i]->low) + ",");
-        response += (String(this->plotter_p[i]->high) + ",");
+        response += (String(this->plotter_p[i]->upper) + ",");
         response += (String(this->plotter_p[i]->min) + ",");
         response += (String(this->plotter_p[i]->max) + ",");
         response += (clipping + ",");
