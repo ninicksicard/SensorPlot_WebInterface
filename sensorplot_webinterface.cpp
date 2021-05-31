@@ -25,6 +25,7 @@ const char SENSORPLOT_HTML_RAW[] PROGMEM = {"<html>\n\
 				<div>\n\
 					<input type='text' placeholder='input' name='input' id='callbackInput'>\n\
 					<input type='button' value='Perform' id='callbackButton'>\n\
+					<input type='button' value='otherButton' id='otherButton'>\n\
 				</div>\n\
 			</div>\n\
 		</div>\n\
@@ -196,6 +197,9 @@ circle {\n\
 	stroke-linecap: round;\n\
 }"};
 
+
+// TODO : add an option to let graph set their min max and stepsize based on the values received
+
 const char SENSORPLOT_JAVASCRIPT_RAW[] PROGMEM = {"window.onload = createReferences;\n\
 window.onresize = ()=>{\n\
 	setMouth();\n\
@@ -219,6 +223,7 @@ function setup() {\n\
 	let path = `M${c*0.6},${c*1.3} Q${c},${c*1.3} ${c*1.4},${c*1.3}`;\n\
 	mouth.setAttribute('d', path);\n\
 	document.getElementById('callbackButton').addEventListener('click', performCallback);\n\
+	document.getElementById('otherButton').addEventListener('click', performCallback);\n\
 	setTimeout(() => {\n\
 		setMouth();\n\
 	}, 500);\n\
@@ -301,26 +306,15 @@ function validateSmileyState() {\n\
 		const graph = container.getElementsByClassName('graph')[0];\n\
 		let values = parseValues(graph);\n\
 		let currentValue = values[values.length-1];\n\
-		let goodThreshold = container.getAttribute('data-good-threshold');\n\
-		let badThreshold = container.getAttribute('data-bad-threshold');\n\
+		let LowTreshold = container.getAttribute('data-low-threshold');\n\
+		let HighTreshold = container.getAttribute('data-high-threshold');\n\
 		switch (state) {\n\
 			case SmileyState.Happy:\n\
-				if (currentValue > badThreshold && badThreshold != '') {\n\
+				if (LowTreshold > currentValue || currentValue > HighTreshold && LowTreshold != '' && HighTreshold != '') {\n\
 					console.log(currentValue);\n\
 					state = SmileyState.Sad;\n\
 					smileyColor = '#f03030';\n\
-				} else if (currentValue > goodThreshold && goodThreshold != '') {\n\
-					console.log(currentValue);\n\
-					state = SmileyState.Medium;\n\
-					smileyColor = '#ffe600';\n\
-				}\n\
-				break;\n\
-			case SmileyState.Medium:\n\
-				if (currentValue > badThreshold && badThreshold != '') {\n\
-					console.log(currentValue);\n\
-					state = SmileyState.Sad;\n\
-					smileyColor = '#f03030';\n\
-				}\n\
+				} \n\
 				break;\n\
 			default:\n\
 				break;\n\
@@ -373,7 +367,7 @@ function createMeasurements() {\n\
 		measurements.appendChild(p);\n\
 	}\n\
 }\n\
-function createGraphModule(title, unit, slag, interval, good, bad, min, max, clipping, stepsize, cycle, cycleStepsize) {\n\
+function createGraphModule(title, unit, slag, interval, low, high, min, max, clipping, stepsize, cycle, cycleStepsize) {\n\
 	const graphModule = document.createElement('div');\n\
 	graphModule.classList.add('container', 'graphmodule');\n\
 	const headline = document.createElement('h1');\n\
@@ -392,8 +386,8 @@ function createGraphModule(title, unit, slag, interval, good, bad, min, max, cli
 	graphContainer.setAttribute('data-unit', unit);\n\
 	graphContainer.setAttribute('data-slag', slag);\n\
 	graphContainer.setAttribute('data-interval', interval);\n\
-	graphContainer.setAttribute('data-good-threshold', good);\n\
-	graphContainer.setAttribute('data-bad-threshold', bad);\n\
+	graphContainer.setAttribute('data-low-threshold', low);\n\
+	graphContainer.setAttribute('data-high-threshold', high);\n\
 	graphModule.appendChild(graphContainer);\n\
 	const graphPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');\n\
 	graphPolygon.classList.add('graph');\n\
@@ -424,7 +418,7 @@ function createGraphs() {\n\
 		let min = values[0];\n\
 		let max = values[0];\n\
 		for (var j=0; j<values.length; j++) {\n\
-			if (values[j] < min) min = values[j];\n\
+			if (values[j] < min ) min = values[j];\n\
 			if (values[j] > max) max = values[j];\n\
 		}\n\
 		if (graph.getAttribute('data-clipping')==='false') {\n\
@@ -667,7 +661,7 @@ __FlashStringHelper* SENSORPLOT_JAVASCRIPT = (__FlashStringHelper*)SENSORPLOT_JA
 SensorPlot_WebInterface::SensorPlot_WebInterface() {
 }
 
-void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, int good, int bad, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis) {
+void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, int low, int bad, int min, int max, int stepsize, int cycle, int cycleStepsize, int *valuesCount, float *values, int *valuesMeasurmentMillis) {
     if (this->plotterCount > 31) {
         return;
     }
@@ -677,8 +671,8 @@ void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, i
 	plot->unit = unit;
 	plot->slag = String(this->plotterCount);
     plot->interval = interval;
-    plot->good = good;
-    plot->bad = bad;
+    plot->low = low;
+    plot->high = high;
     plot->min = min;
     plot->max = max;
     plot->clipping = 0;
@@ -693,10 +687,11 @@ void SensorPlot_WebInterface::addPlot(String title, String unit, int interval, i
     this->plotterCount ++;
 }
 
-void SensorPlot_WebInterface::interfaceConfig(String websiteTitle, String callbackInput, String callbackButton) {
+void SensorPlot_WebInterface::interfaceConfig(String websiteTitle, String callbackInput, String callbackButton, String otherButton) {
     this->websiteTitle = websiteTitle;
     this->callbackInput = callbackInput;
     this->callbackButton = callbackButton;
+    this->otherButton = otherButton;
 }
 
 void SensorPlot_WebInterface::serverResponseSetup(ESP8266WebServer *server, int (*callback)(String response)) {
@@ -768,6 +763,8 @@ void SensorPlot_WebInterface::responseConfig() {
     response += this->callbackInput;
     response += ";";
     response += this->callbackButton;
+    response += ";";
+    response += this->otherButton;
 
     this->server->setContentLength(CONTENT_LENGTH_UNKNOWN);
     this->server->send(200, "text/plain", response);
@@ -788,8 +785,8 @@ void SensorPlot_WebInterface::responseGraphData() {
         response += (this->plotter_p[i]->unit + ",");
         response += (this->plotter_p[i]->slag + ",");
         response += (String(this->plotter_p[i]->interval) + ",");
-        response += (String(this->plotter_p[i]->good) + ",");
-        response += (String(this->plotter_p[i]->bad) + ",");
+        response += (String(this->plotter_p[i]->low) + ",");
+        response += (String(this->plotter_p[i]->high) + ",");
         response += (String(this->plotter_p[i]->min) + ",");
         response += (String(this->plotter_p[i]->max) + ",");
         response += (clipping + ",");
